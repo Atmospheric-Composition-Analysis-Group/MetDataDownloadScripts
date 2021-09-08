@@ -1,0 +1,39 @@
+#!/bin/bash
+# 
+# Usage: ./download_merra2 DATE
+#
+# Notes: 
+# * Requires $HOME/.netrc with urs.earthdata.nasa.gov credentials.
+# * DATE format can be any format understood by the bash date command.
+# 
+set -u
+set -e
+
+URS_COOKIES=$HOME/.urs_cookies
+
+YEAR=$(date -d"$1" +%Y)
+MONTH=$(date -d"$1" +%m)
+DAY=$(date -d"$1" +%d)
+
+function download_collection() {
+    SERVER_NAME=$1
+    COLLECTION_SHORT_NAME=${2}.5.12.4
+    COLLECTION_LONG_NAME=$3
+    COLLECTION_SUBSET=$4
+    FILE_PATH=$YEAR/$MONTH/MERRA2_400.${COLLECTION_LONG_NAME}.${YEAR}${MONTH}${DAY}.nc4
+    URL=https://${SERVER_NAME}.gesdisc.eosdis.nasa.gov/opendap/hyrax/MERRA2/${COLLECTION_SHORT_NAME}/${FILE_PATH}.nc4?${COLLECTION_SUBSET}
+    printf "Downloading: %s \r" "$URL"
+    HTTP_CODE=$(curl --write-out "%{http_code}" --silent -k -n -c $URS_COOKIES -b $URS_COOKIES -L -g --url $URL -o $FILE_PATH --create-dirs)
+    printf "(status %i) %s   \n" $HTTP_CODE "$URL"
+}
+
+download_collection "goldsmr5" "M2I3NVASM" "inst3_3d_asm_Nv" "PS,QV,T"
+download_collection "goldsmr4" "M2T1NXCHM" "tavg1_2d_chm_Nx" "LWI"
+download_collection "goldsmr4" "M2T1NXFLX" "tavg1_2d_flx_Nx" "EFLUX,EVAP,FRSEAICE,HFLUX,PBLH,PRECANV,PRECCON,PRECLSC,PRECSNO,PRECTOT,USTAR,Z0M"
+download_collection "goldsmr4" "M2T1NXLND" "tavg1_2d_lnd_Nx" "FRSNO,GRN,GWETROOT,GWETTOP,LAI,PARDFLAND,PARDRLAND,SNODP,SNOMAS"
+download_collection "goldsmr4" "M2T1NXRAD" "tavg1_2d_rad_Nx" "ALBEDO,CLDTOT,LWGNT,SWGDN"
+download_collection "goldsmr4" "M2T1NXSLV" "tavg1_2d_slv_Nx" "T2M,TO3,TROPPT,TS,U10M,V10M"
+download_collection "goldsmr5" "M2T3NVASM" "tavg3_3d_asm_Nv" "OMEGA,QI,QL,RH,SLP,U,V"
+download_collection "goldsmr5" "M2T3NVCLD" "tavg3_3d_cld_Nv" "CLOUD,DTRAIN,TAUCLI,TAUCLW"
+download_collection "goldsmr5" "M2T3NEMST" "tavg3_3d_mst_Ne" "CMFMC,PFICU,PFILSAN,PFLCU,PFLLSAN"
+download_collection "goldsmr5" "M2T3NVMST" "tavg3_3d_mst_Nv" "DQRCU,DQRLSAN,REEVAPCN,REEVAPLSAN"
