@@ -1,0 +1,64 @@
+#!/bin/bash
+# 
+# Usage: ./download-GEOS-FP DATE
+#
+# Notes: 
+# * DATE format can be any format understood by the bash date command.
+# 
+set -u
+set -e
+
+URS_COOKIES=$HOME/.urs_cookies
+
+YEAR=$(date -d"$1" +%Y)
+MONTH=$(date -d"$1" +%m)
+DAY=$(date -d"$1" +%d)
+
+function download_collection() {
+    COLLECTION_LONG_NAME=$1
+    case $COLLECTION_LONG_NAME in
+    *inst3*)
+        START_HOUR=0
+        FREQ_HOUR=3
+        MINUTE=00
+        ;;
+    *inst1*)
+        START_HOUR=0
+        FREQ_HOUR=1
+        MINUTE=30
+        ;;
+    *tavg3*)
+        START_HOUR=1
+        FREQ_HOUR=3
+        MINUTE=30
+        ;;
+    *tavg1*)
+        START_HOUR=0
+        FREQ_HOUR=1
+        MINUTE=30
+        ;;
+    *)
+        echo "Invalid collection name"
+        exit 1
+        ;;
+    esac
+    
+    for HOUR in $(seq -w $START_HOUR $FREQ_HOUR 23); do
+        FILE_PATH=Y$YEAR/M$MONTH/D${DAY}/GEOS.fp.asm.${COLLECTION_LONG_NAME}.${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}.V01.nc4
+        URL=https://portal.nccs.nasa.gov/datashare/gmao/geos-fp/das/${FILE_PATH}
+        printf "Downloading: %s \r" "$URL"
+        HTTP_CODE=$(curl --write-out "%{http_code}" --silent -k -n -L -g --url $URL -o $FILE_PATH --create-dirs)
+        printf "(status %i) %s   \n" $HTTP_CODE "$URL"
+    done
+}
+
+download_collection "tavg1_2d_rad_Nx"
+download_collection "tavg1_2d_lnd_Nx"
+download_collection "tavg1_2d_flx_Nx"
+download_collection "tavg1_2d_slv_Nx"
+download_collection "inst3_3d_asm_Nv"
+download_collection "tavg3_3d_asm_Nv"
+download_collection "tavg3_3d_cld_Nv"
+download_collection "tavg3_3d_mst_Ne"
+download_collection "tavg3_3d_rad_Nv"
+download_collection "tavg3_3d_mst_Nv" 
