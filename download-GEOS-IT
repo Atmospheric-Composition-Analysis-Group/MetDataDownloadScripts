@@ -26,7 +26,7 @@ function download_collection() {
     *inst_1hr*)
         START_HOUR=0
         FREQ_HOUR=1
-        MINUTE=30
+        MINUTE=00
         ;;
     *tavg_3hr*)
         START_HOUR=1
@@ -47,35 +47,36 @@ function download_collection() {
     for HOUR in $(seq -w $START_HOUR $FREQ_HOUR 23); do
         FILE_PATH=Y$YEAR/M$MONTH/GEOS.it.asm.${COLLECTION_LONG_NAME}.GEOS5271.${YEAR}-${MONTH}-${DAY}T${HOUR}${MINUTE}.V01.nc4
         URL=https://gmao.gsfc.nasa.gov/gmaoftp/ops/GEOSIT_sample/data_products/${COLLECTION_LONG_NAME}/${FILE_PATH}
-        echo "$URL"
         printf "Downloading: %s \r" "$URL"
         HTTP_CODE=$(curl --write-out "%{http_code}" --silent -k -n -c $URS_COOKIES -b $URS_COOKIES -L -g --url $URL -o $FILE_PATH --create-dirs)
         printf "(status %i) %s   \n" $HTTP_CODE "$URL"
     done
 }
 
-#download_collection "asm_inst_3hr_glo_C180x180x6_v72" #"PS,QV,T"
-#download_collection "chm_tavg_3hr_glo_C180x180x6_slv" # "LWI"
-#download_collection "flx_tavg_1hr_glo_C180x180x6_slv" # "EFLUX,EVAP,FRSEAICE,HFLUX,PBLH,PRECANV,PRECCON,PRECLSC,PRECSNO,PRECTOT,USTAR,Z0M"
-#download_collection "lnd_tavg_1hr_glo_C180x180x6_slv" #"FRSNO,GRN,GWETROOT,GWETTOP,LAI,SNODP,SNOMAS"
-#download_collection "lfo_tavg_1hr_glo_C180x180x6_slv" # "PARDF,PARDR,lat,lon,time"
-#download_collection "rad_tavg_1hr_glo_C180x180x6_slv" # "ALBEDO,CLDTOT,LWGNT,SWGDN"
-#download_collection "slv_tavg_1hr_glo_C180x180x6_slv" # "T2M,TO3,TROPPT,TS,U10M,V10M"
-#download_collection "asm_tavg_3hr_glo_C180x180x6_v72" # "OMEGA,QI,QL,RH,SLP,U,V"
-#download_collection "cld_tavg_3hr_glo_C180x180x6_v72" # "DTRAIN,TAUCLI,TAUCLW"
-#download_collection "rad_tavg_3hr_glo_C180x180x6_v72" # "CLOUD"
-#download_collection "mst_tavg_3hr_glo_C180x180x6_v73" # "CMFMC,PFICU,PFILSAN,PFLCU,PFLLSAN"
-#download_collection "mst_tavg_3hr_glo_C180x180x6_v72" # "DQRCU,DQRLSAN,REEVAPCN,REEVAPLSAN"
+download_collection "ctm_tavg_1hr_glo_C180x180x6_v72" # "MFXC,MFYC,CX,CY,PS,QV"
+download_collection "ctm_inst_1hr_glo_C180x180x6_v72" # "PS,QV"
+download_collection "asm_inst_3hr_glo_C180x180x6_v72" # "PS,QV,T"
+download_collection "chm_tavg_3hr_glo_C180x180x6_slv" # "LWI"
+download_collection "flx_tavg_1hr_glo_C180x180x6_slv" # "EFLUX,EVAP,FRSEAICE,HFLUX,PBLH,PRECANV,PRECCON,PRECLSC,PRECSNO,PRECTOT,USTAR,Z0M"
+download_collection "lnd_tavg_1hr_glo_C180x180x6_slv" # "FRSNO,GRN,GWETROOT,GWETTOP,LAI,SNODP,SNOMAS"
+download_collection "lfo_tavg_1hr_glo_C180x180x6_slv" # "PARDF,PARDR,lat,lon,time"
+download_collection "rad_tavg_1hr_glo_C180x180x6_slv" # "ALBEDO,CLDTOT,LWGNT,SWGDN"
+download_collection "slv_tavg_1hr_glo_C180x180x6_slv" # "T2M,TO3,TROPPT,TS,U10M,V10M"
+download_collection "asm_tavg_3hr_glo_C180x180x6_v72" # "OMEGA,QI,QL,RH,SLP,U,V"
+download_collection "cld_tavg_3hr_glo_C180x180x6_v72" # "DTRAIN,TAUCLI,TAUCLW"
+download_collection "rad_tavg_3hr_glo_C180x180x6_v72" # "CLOUD"
+download_collection "mst_tavg_3hr_glo_C180x180x6_v73" # "CMFMC,PFICU,PFILSAN,PFLCU,PFLLSAN"
+download_collection "mst_tavg_3hr_glo_C180x180x6_v72" # "DQRCU,DQRLSAN,REEVAPCN,REEVAPLSAN"
 
-download_collection "asm_inst_3hr_glo_L576x361_v72" #"PS,QV,T"
-download_collection "chm_tavg_3hr_glo_L576x361_slv" # "LWI"
-download_collection "flx_tavg_1hr_glo_L576x361_slv" # "EFLUX,EVAP,FRSEAICE,HFLUX,PBLH,PRECANV,PRECCON,PRECLSC,PRECSNO,PRECTOT,USTAR,Z0M"
-download_collection "lnd_tavg_1hr_glo_L576x361_slv" #"FRSNO,GRN,GWETROOT,GWETTOP,LAI,SNODP,SNOMAS"
-download_collection "lfo_tavg_1hr_glo_L576x361_slv" # "PARDF,PARDR,lat,lon,time"
-download_collection "rad_tavg_1hr_glo_L576x361_slv" # "ALBEDO,CLDTOT,LWGNT,SWGDN"
-download_collection "slv_tavg_1hr_glo_L576x361_slv" # "T2M,TO3,TROPPT,TS,U10M,V10M"
-download_collection "asm_tavg_3hr_glo_L576x361_v72" # "OMEGA,QI,QL,RH,SLP,U,V"
-download_collection "cld_tavg_3hr_glo_L576x361_v72" # "DTRAIN,TAUCLI,TAUCLW"
-download_collection "rad_tavg_3hr_glo_L576x361_v72" # "CLOUD"
-download_collection "mst_tavg_3hr_glo_L576x361_v73" # "CMFMC,PFICU,PFILSAN,PFLCU,PFLLSAN"
-download_collection "mst_tavg_3hr_glo_L576x361_v72" # "DQRCU,DQRLSAN,REEVAPCN,REEVAPLSAN"
+#download_collection "asm_inst_3hr_glo_L576x361_v72" #"PS,QV,T"
+#download_collection "chm_tavg_3hr_glo_L576x361_slv" # "LWI"
+#download_collection "flx_tavg_1hr_glo_L576x361_slv" # "EFLUX,EVAP,FRSEAICE,HFLUX,PBLH,PRECANV,PRECCON,PRECLSC,PRECSNO,PRECTOT,USTAR,Z0M"
+#download_collection "lnd_tavg_1hr_glo_L576x361_slv" #"FRSNO,GRN,GWETROOT,GWETTOP,LAI,SNODP,SNOMAS"
+#download_collection "lfo_tavg_1hr_glo_L576x361_slv" # "PARDF,PARDR,lat,lon,time"
+#download_collection "rad_tavg_1hr_glo_L576x361_slv" # "ALBEDO,CLDTOT,LWGNT,SWGDN"
+#download_collection "slv_tavg_1hr_glo_L576x361_slv" # "T2M,TO3,TROPPT,TS,U10M,V10M"
+#download_collection "asm_tavg_3hr_glo_L576x361_v72" # "OMEGA,QI,QL,RH,SLP,U,V"
+#download_collection "cld_tavg_3hr_glo_L576x361_v72" # "DTRAIN,TAUCLI,TAUCLW"
+#download_collection "rad_tavg_3hr_glo_L576x361_v72" # "CLOUD"
+#download_collection "mst_tavg_3hr_glo_L576x361_v73" # "CMFMC,PFICU,PFILSAN,PFLCU,PFLLSAN"
+#download_collection "mst_tavg_3hr_glo_L576x361_v72" # "DQRCU,DQRLSAN,REEVAPCN,REEVAPLSAN"
